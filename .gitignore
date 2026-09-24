@@ -1,0 +1,9 @@
+# OS / editor files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Local runtime artifacts
+__pycache__/
+*.log
