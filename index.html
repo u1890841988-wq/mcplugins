@@ -15,23 +15,25 @@
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#explore" aria-label="Plugin List home">
-        <span class="brand-mark"><i data-lucide="scan-search"></i></span>
-        <span class="brand-copy"><span>PLUGIN <em>LIST</em></span><small>PLUGIN DISCOVERY</small></span>
+        <img class="brand-logo" src="logo.png" alt="Plugin List logo" />
+        <span class="brand-copy"><span>PLUGIN LIST</span><small>PLUGIN DISCOVERY</small></span>
       </a>
       <nav class="topnav" aria-label="Main navigation">
-        <a class="active" data-view="catalog" href="#explore">Explore</a>
-        <a href="#sources">Sources</a>
-        <a href="#about">How it works</a>
+        <a id="exploreLink" class="active" data-view="catalog" href="#explore">Explore</a>
+        <a id="aboutLink" href="#about">How it works</a>
       </nav>
       <div class="top-actions">
-        <button class="icon-btn" id="savedButton" title="Open bookmarks" aria-label="Open bookmarks"><i data-lucide="bookmark"></i><span id="savedCount">0</span></button>
+        <button class="bookmark-button" id="savedButton" type="button" title="Open bookmarks" aria-label="Open bookmarks">
+          <span class="bookmark-label">Bookmarks</span>
+          <span class="bookmark-count" id="savedCount">0</span>
+        </button>
       </div>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="pulse-dot"></span> LIVE INDEX / MODRINTH + SPIGOT</p>
+          <p class="eyebrow"><span class="pulse-dot"></span> LIVE INDEX / MODRINTH</p>
           <h1>Find the right<br /><span>stack.</span></h1>
           <p class="hero-subtitle">Search the best Minecraft plugin marketplaces in one focused workspace.</p>
         </div>
@@ -44,12 +46,12 @@
 
       <section class="search-panel" id="catalog" aria-label="Plugin search">
         <div class="search-row">
+          <button class="filter-toggle" id="filterToggle" aria-expanded="false"><i data-lucide="sliders-horizontal"></i> Filters <span id="filterCount">1</span></button>
           <label class="search-box" for="searchInput">
             <i data-lucide="search"></i>
             <input id="searchInput" type="search" placeholder="Try: Skript Shop, land claim, economy..." autocomplete="off" />
             <kbd>/</kbd>
           </label>
-          <button class="filter-toggle" id="filterToggle"><i data-lucide="sliders-horizontal"></i> Filters <span id="filterCount">0</span></button>
         </div>
         <div class="quick-filters" aria-label="Quick filters">
           <button class="chip active" data-quick="all">All plugins</button>
@@ -59,23 +61,31 @@
           <button class="chip" data-quick="downloads"><i data-lucide="download"></i> Most downloaded</button>
           <button class="chip" data-quick="skript"><i data-lucide="code-2"></i> Skript resources</button>
         </div>
-        <div class="active-filters" id="activeFilters" hidden aria-live="polite"></div>
+        <div class="active-filters" id="activeFilters" hidden aria-live="polite" style="display:none;"></div>
         <div class="filters-panel" id="filtersPanel" hidden>
           <div class="filter-group">
             <span class="filter-label">Source</span>
-            <select id="sourceFilters" aria-label="Filter by source"></select>
+            <select id="sourceFilters" aria-label="Filter by source">
+              <option value="all">Any source</option>
+            </select>
           </div>
           <div class="filter-group">
             <span class="filter-label">Platform</span>
-            <select id="platformFilters" aria-label="Filter by platform"></select>
+            <select id="platformFilters" aria-label="Filter by platform">
+              <option value="all">Any platform</option>
+            </select>
           </div>
           <div class="filter-group compact-group">
             <span class="filter-label">Price</span>
-            <select id="priceFilters" aria-label="Filter by price"></select>
+            <select id="priceFilters" aria-label="Filter by price">
+              <option value="all">Any price</option>
+            </select>
           </div>
           <div class="filter-group">
             <span class="filter-label">Game edition</span>
-            <select id="editionFilters" aria-label="Filter by game edition"></select>
+            <select id="editionFilters" aria-label="Filter by game edition">
+              <option value="all">Any game edition</option>
+            </select>
           </div>
           <div class="filter-group compact-group">
             <label class="filter-label" for="versionFilter">Minecraft version</label>
@@ -105,28 +115,13 @@
       <section class="catalog-header">
         <div>
           <p class="section-kicker">CURATED INDEX</p>
-          <h2 id="viewTitle">Plugin directory <span id="resultCount">0 results</span></h2>
+          <div class="catalog-title-wrap">
+            <h2 id="viewTitle">Plugin directory</h2>
+            <small id="searchResultSummary" class="search-result-summary" hidden></small>
+          </div>
         </div>
-        <label class="sort-control">Sort by
-          <select id="sortSelect">
-            <option value="relevance">Relevance</option>
-            <option value="downloads">Most downloads</option>
-            <option value="popular">Most popular</option>
-            <option value="updated">Recently updated</option>
-            <option value="price-low">Price: low to high</option>
-          </select>
-          <i data-lucide="chevron-down"></i>
-        </label>
       </section>
 
-      <div class="source-strip" id="indexedSources">
-        <span>INDEXED SOURCES</span>
-        <div class="source-logos">
-          <button class="source-tab active" data-source="all"><b>ALL</b><small>12.8k</small></button>
-          <button class="source-tab" data-source="Modrinth"><b><span class="source-dot modrinth"></span>MODRINTH</b><small>4.2k</small></button>
-          <button class="source-tab" data-source="Spigot"><b><span class="source-dot spigot"></span>SPIGOT</b><small>4.8k</small></button>
-        </div>
-      </div>
 
       <section class="results-layout">
         <div class="results-grid" id="resultsGrid"></div>
@@ -147,15 +142,6 @@
       <div class="load-more-wrap" id="loadMoreWrap" hidden>
         <button class="load-more" id="loadMore">Load more live results <i data-lucide="arrow-down"></i></button>
       </div>
-      <section class="info-page" id="sources" hidden>
-        <p class="section-kicker">THE INDEX</p>
-        <h2>Sources</h2>
-        <p class="info-lede">Plugin List brings live marketplace data into one place, with each result still linked to its original source.</p>
-        <div class="info-grid">
-          <article class="info-block"><span class="source-dot modrinth"></span><h3>Modrinth</h3><p>Open-source projects, plugin galleries, version metadata, downloads, and project links from the Modrinth API.</p><a href="https://modrinth.com/" target="_blank" rel="noreferrer">Visit Modrinth <i data-lucide="arrow-up-right"></i></a></article>
-          <article class="info-block"><span class="source-dot spigot"></span><h3>Spigot</h3><p>Spigot resources, premium status, exact prices where available, descriptions, images, and community links.</p><a href="https://www.spigotmc.org/resources/" target="_blank" rel="noreferrer">Visit Spigot <i data-lucide="arrow-up-right"></i></a></article>
-        </div>
-      </section>
       <section class="info-page" id="about" hidden>
         <p class="section-kicker">HOW IT WORKS</p>
         <h2>Find with intent.</h2>
@@ -170,14 +156,18 @@
     </footer>
   </div>
 
+  <button class="scroll-top" id="scrollTopButton" type="button" aria-label="Scroll to top">
+    <i data-lucide="arrow-up"></i>
+  </button>
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
   <aside class="details-drawer" id="detailsDrawer" aria-labelledby="drawerTitle" aria-hidden="true">
     <button class="drawer-close" id="drawerClose" title="Close details" aria-label="Close details"><i data-lucide="x"></i></button>
     <div id="drawerContent"></div>
   </aside>
-  <div class="image-lightbox" id="imageLightbox" hidden role="dialog" aria-modal="true" aria-label="Full-size plugin image">
-    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close full-size image"><i data-lucide="x"></i></button>
+  <div class="image-lightbox" id="imageLightbox" hidden role="dialog" aria-modal="true" aria-label="Full-size plugin media">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close full-size media"><i data-lucide="x"></i></button>
     <img id="lightboxImage" alt="Full-size plugin preview" />
+    <video id="lightboxVideo" controls playsinline muted hidden></video>
   </div>
   <script src="app.js"></script>
 </body>
